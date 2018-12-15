@@ -1,6 +1,6 @@
 import csv
-import requests
-from lxml import html
+# import requests
+# from lxml import html
 
 
 def add_country(row):
@@ -42,6 +42,47 @@ def add_country_by_year(row):
             return
 
 
+def add_country_by_name(row):
+    if row[0] == 'ЭК' or row[3] not in alcohol_indexes:
+        return
+    if row[3] == '2203':
+        if row[2] in beer:
+            beer[row[2]] += float(row[7])
+        elif float(row[6]) != 0.0:
+            beer.update({row[2]: float(row[7])})
+            return
+    elif row[3] == '2204':
+        if row[2] in wine:
+            wine[row[2]] += float(row[7])
+        elif float(row[6]) != 0.0:
+            wine.update({row[2]: float(row[7])})
+            return
+    elif row[3] == '2205':
+        if row[2] in vermut:
+            vermut[row[2]] += float(row[7])
+        elif float(row[6]) != 0.0:
+            vermut.update({row[2]: float(row[7])})
+            return
+    elif row[3] == '2206':
+        if row[2] in sider:
+            sider[row[2]] += float(row[7])
+        elif float(row[6]) != 0.0:
+            sider.update({row[2]: float(row[7])})
+            return
+    elif row[3] == '2207':
+        if row[2] in alcohol:
+            alcohol[row[2]] += float(row[7])
+        elif float(row[6]) != 0.0:
+            alcohol.update({row[2]: float(row[7])})
+            return
+    else:
+        if row[2] in alcohol_drinks:
+            alcohol_drinks[row[2]] += float(row[7])
+        elif float(row[6]) != 0.0:
+            alcohol_drinks.update({row[2]: float(row[7])})
+            return
+
+
 alcohol_names = []
 with open('ALCOHOL_NAMES.txt', 'r', encoding='utf-8') as file:
     for row in file:
@@ -65,7 +106,6 @@ alcohol_indexes = set(alcohol_indexes)
 
 # print(alcohol_indexes)
 
-
 # https://docs.python.org/2.4/lib/standard-encodings.html
 
 countries = {}
@@ -74,6 +114,13 @@ countries_2014 = {}
 countries_2015 = {}
 countries_2016 = {}
 
+beer = {}
+wine = {}
+vermut = {}
+sider = {}
+alcohol = {}
+alcohol_drinks = {}
+
 with open('TCBT.csv', 'r', encoding='cp866') as file:
     reader = csv.reader(file)
     for row in reader:
@@ -81,6 +128,7 @@ with open('TCBT.csv', 'r', encoding='cp866') as file:
             continue
         add_country(row)
         add_country_by_year(row)
+        add_country_by_name(row)
 
 
 def int_countries(countr):
@@ -95,6 +143,12 @@ int_countries(countries_2013)
 int_countries(countries_2014)
 int_countries(countries_2015)
 int_countries(countries_2016)
+int_countries(beer)
+int_countries(wine)
+int_countries(vermut)
+int_countries(sider)
+int_countries(alcohol)
+int_countries(alcohol_drinks)
 
 # print(countries)
 # print(countries_2013)
@@ -102,7 +156,12 @@ int_countries(countries_2016)
 # print(countries_2015)
 # print(countries_2016)
 # print()
-
+# print(wine)
+# print(beer)
+# print(vermut)
+# print(sider)
+# print(alcohol_drinks)
+# print(alcohol)
 
 countries_by_codes = {}
 
