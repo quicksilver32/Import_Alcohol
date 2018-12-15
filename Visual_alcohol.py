@@ -12,5 +12,15 @@ pd_alcohol = pd.DataFrame(d)
 pd_alcohol.index.name = 'Country code'
 pd_alcohol = pd_alcohol.replace(np.nan, 0)
 
+d = {'Country name': pd.Series(countries_by_codes), 'Beer': pd.Series(beer), 'Wine': pd.Series(wine),
+     'Vermut': pd.Series(vermut), 'Sider': pd.Series(sider), 'Alcohol': pd.Series(alcohol),
+     'Alcohol drinks': pd.Series(alcohol_drinks)}
+pd_drinks = pd.DataFrame(d)
+pd_drinks.index.name = 'Country code'
+pd_drinks = pd_drinks.replace(np.nan, 0)
+
 print(pd_alcohol)
 pd_alcohol.to_csv('pd_alc.csv')
+
+print(pd_drinks)
+pd_drinks.to_csv('pd_drinks.csv')
