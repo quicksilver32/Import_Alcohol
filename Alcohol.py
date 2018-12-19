@@ -1,6 +1,6 @@
+from lxml import etree
+import requests
 import csv
-# import requests
-# from lxml import html
 
 
 def add_country(row):
@@ -133,7 +133,7 @@ with open('TCBT.csv', 'r', encoding='cp866') as file:
 
 def int_countries(countr):
     for key in countr:
-        if int(countr[key]) != 0:
+        if int(countr[key]) > 100:
             countr[key] = int(countr[key])
     return
 
@@ -154,9 +154,9 @@ int_countries(alcohol_drinks)
 # print(countries_2013)
 # print(countries_2014)
 # print(countries_2015)
-# print(countries_2016)
 # print()
 # print(wine)
+# print(countries_2016)
 # print(beer)
 # print(vermut)
 # print(sider)
@@ -164,24 +164,25 @@ int_countries(alcohol_drinks)
 # print(alcohol)
 
 countries_by_codes = {}
+url = 'https://www.artlebedev.ru/country-list/xml/'
+r = requests.get(url)
+text = r.text
+text = text.replace('&#160;', ' ')
+with open('ctr.xml', 'w', encoding='utf=8') as file:
+    file.write(text)
 
-# url = 'https://www.artlebedev.ru/country-list/tab/'
-# r = requests.get(url)
-# with open('countries.txt', 'w', encoding='utf-8') as file:
-#     file = file.write(r.text)
+doc = etree.parse('ctr.xml')
+root = doc.getroot()
+for node in root.iter():
+    if node.text == 'Alpha2' or node.text == 'На английском':
+        continue
+    if node.tag == 'english':
+        name = node.text.replace(u'\xa0', ' ')
+    if node.tag == 'alpha2':
+        nm = node.text.replace(u'\xa0', ' ')
+        countries_by_codes.update({nm: name})
 
-with open('countries.csv', 'r', encoding='utf-8') as file:
-    reader = csv.reader(file)
-    for row in reader:
-        if row[0].startswith('name'):
-            continue
-        code = row[0].split('\t')
-        try:
-            countries_by_codes.update({code[3]: code[2]})
-        except:
-            continue
-
-# print(countries_by_codes)
+# # print(countries_by_codes)
 countries_pop = []
 for key in countries_by_codes:
     if key not in countries:
